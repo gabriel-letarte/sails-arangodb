@@ -1,0 +1,44 @@
+{
+    "name": "sails-arangodb",
+    "version": "0.1.0",
+    "description": "arangodb adapter for Sails / Waterline",
+    "main": "./lib/adapter.js",
+    "scripts": {
+        "test": "node test/integration/runner -R spec -b"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/rosmo/sails-arangodb.git"
+    },
+    "keywords": [
+    "arangodb",
+    "adapter",
+    "sails",
+    "waterline",
+    "sails.js",
+    "plugin"
+  ],
+    "author": "Taneli Leppä <rosmo@sektori.com>",
+    "license": "MIT",
+    "readmeFilename": "README.md",
+    "dependencies": {
+        "arangojs": "^3.3.0",
+        "q": "^1.0.1",
+        "underscore": "^1.6.0",
+        "async": "^0.9.0",
+        "aqb": "~1.8.2"
+    },
+    "devDependencies": {
+        "waterline-adapter-tests": "~0.10.0",
+        "mocha": "*",
+        "captains-log": "~0.11.0"
+    },
+    "waterlineAdapter": {
+        "type": "arangodb",
+        "interfaces": [
+      "semantic",
+      "queryable"
+    ],
+        "waterlineVersion": "~0.10.0"
+    }
+}
