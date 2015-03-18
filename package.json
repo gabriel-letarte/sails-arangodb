@@ -50,7 +50,7 @@
     "eqeqeq": false,
     "latedef": true,
     "shadow": "inner",
-    "undef": false,
+    "undef": true,
     "unused": false,
     "node": true,
     "sub": true
