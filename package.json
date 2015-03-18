@@ -45,5 +45,14 @@
   },
 
   "jshintConfig": {
+    "bitwise": true,
+    "curly": false,
+    "eqeqeq": false,
+    "latedef": true,
+    "shadow": "inner",
+    "undef": false,
+    "unused": false,
+    "node": true,
+    "sub": true
   }
 }
