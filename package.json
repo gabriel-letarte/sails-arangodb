@@ -4,7 +4,8 @@
   "description": "arangodb adapter for Sails / Waterline",
   "main": "./lib/adapter.js",
   "scripts": {
-    "test": "node test/integration/runner -R spec -b"
+    "test": "node test/integration/runner -R spec -b",
+    "lint": "jshint lib/*.js"
   },
   "repository": {
     "type": "git",
@@ -41,5 +42,8 @@
       "queryable"
     ],
     "waterlineVersion": "~0.10.0"
+  },
+
+  "jshintConfig": {
   }
 }
