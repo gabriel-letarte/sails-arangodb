@@ -51,7 +51,7 @@
     "latedef": true,
     "shadow": "inner",
     "undef": true,
-    "unused": false,
+    "unused": "vars",
     "node": true,
     "sub": true
   }
