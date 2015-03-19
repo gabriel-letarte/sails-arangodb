@@ -23,7 +23,7 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "arangojs": "^3.3.0",
+    "arangojs": "^3.4.2",
     "q": "^1.0.1",
     "underscore": "^1.6.0",
     "async": "^0.9.0",
