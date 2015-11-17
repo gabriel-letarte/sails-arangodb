@@ -23,7 +23,7 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "arangojs": ">=3.4.2",
+    "arangojs": ">=4.0.1",
     "q": "^1.0.1",
     "underscore": "^1.6.0",
     "async": "^0.9.0",
@@ -33,7 +33,7 @@
     "captains-log": "~0.11.0",
     "jshint": "^2.6.3",
     "mocha": "*",
-    "waterline-adapter-tests": "~0.10.0"
+    "waterline-adapter-tests": "~0.10.14"
   },
   "waterlineAdapter": {
     "type": "arangodb",
@@ -41,7 +41,7 @@
       "semantic",
       "queryable"
     ],
-    "waterlineVersion": "~0.10.0"
+    "waterlineVersion": "~0.10.26"
   },
 
   "jshintConfig": {
