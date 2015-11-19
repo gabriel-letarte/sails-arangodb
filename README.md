@@ -16,7 +16,7 @@ expectations around the API for your users, and overall, a more
 pleasant development experience for everyone.
 
 This adapter has been developed pretty quickly and not at all tested
-well. 
+well.
 
 ### Installation
 
@@ -53,23 +53,23 @@ Raw AQL query.
 Creates edge between specified two models using "@from" and "@to"
 (which can be objects or strings). NOTE: There's a current bug in
 arangojs library 3.3.0 which prevents creation of edges without a patch.
-  
-usage: 
+
+usage:
   ```javascript
  //Assume a model named "Post"
   Post.createEdge(post, comment, {'data': { 'additional : 'data' }},function(err, result){
-  
+
   });
   ```
-  
+
 ###### `deleteEdges(@from,@to,@options,@callback)`
 Deletes edges between specified two models using "@from" and "@to".
-  
-usage: 
+
+usage:
   ```javascript
  //Assume a model named "Post"
   Post.deleteEdges(post, comment ,null,function(err, result){
-  
+
   });
   ```
 
@@ -99,7 +99,7 @@ module.exports = {
         email: {
             type: 'email',
             unique: true
-        },        
+        },
         profile: {
             collection: 'Profile',
             via: 'user',
@@ -164,13 +164,18 @@ Check out **Connections** in the Sails docs, or see the `config/connections.js` 
 
 localArangoDB: {
     adapter: 'sails-arangodb',
+
     host: 'localhost',
     port: 8529,
-    database: {
-      name: 'example',
-      graph: 'example'
-    }
 
+    user: 'root',
+    password: 'CgdYW3zBLy5yCszR',
+
+    database: '_system'
+
+    graph: 'examplegraph'            // ArangoDB specific
+    collection: 'examplecollection'  // ArangoDB specific
+}
 ```
 
 
