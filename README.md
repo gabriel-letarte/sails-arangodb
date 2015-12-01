@@ -1,5 +1,7 @@
 ![image_squidhome@2x.png](http://i.imgur.com/RIvu9.png)
 
+# Currently working on using <a href="https://github.com/arangodb/arangojs">ArangoJS</a> 4.1.0+
+
 # sails-arangodb
 
 Provides easy access to `arangodb` from Sails.js & Waterline.
