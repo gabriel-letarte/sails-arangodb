@@ -1,6 +1,6 @@
 {
   "name": "sails-arangodb",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "arangodb adapter for Sails / Waterline",
   "main": "./lib/adapter.js",
   "scripts": {
