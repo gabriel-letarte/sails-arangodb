@@ -186,7 +186,7 @@ localArangoDB: {
 
 **[MIT](./LICENSE)**
 &copy; 2016 Gabriel Letarte ([gabriel-letarte](http://github.com/gabriel-letarte)) & [thanks to]
-[rosmo](http://github.com/rosmo) & [thanks to]
+Taneli Leppä ([rosmo](http://github.com/rosmo)) & [thanks to]
 [vjsrinath](http://github.com/vjsrinath) & [thanks to]
 [balderdashy](http://github.com/balderdashy), [Mike McNeil](http://michaelmcneil.com), [Balderdash](http://balderdash.co) & contributors
 
