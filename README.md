@@ -1,10 +1,11 @@
 ![image_squidhome@2x.png](http://i.imgur.com/RIvu9.png)
 
-# Currently working on using <a href="https://github.com/arangodb/arangojs">ArangoJS</a> 4.1.0+
-
 # sails-arangodb
 
-Provides easy access to `arangodb` from Sails.js & Waterline.
+Provides easy access to `ArangoDB` from Sails.js & Waterline.
+
+Take a look at <a href="https://github.com/gabriel-letarte/sails-arangodb-demo">
+sails-arangodb-demo</a> for more up-to-date examples.
 
 This module is a Waterline/Sails adapter, an early implementation of a
 rapidly-developing, tool-agnostic data standard. Its goal is to
@@ -17,8 +18,7 @@ built-in generic test suites, standardized documentation, reasonable
 expectations around the API for your users, and overall, a more
 pleasant development experience for everyone.
 
-This adapter has been developed pretty quickly and not at all tested
-well.
+This adapter has been developed pretty quickly and may contain bugs.
 
 ### Installation
 
@@ -34,46 +34,44 @@ This adapter exposes the following methods:
 
 ###### `find()`
 
-
 ###### `create()`
 
 ###### `update()`
 
 ###### `destroy()`
 
-###### `quote()`
+###### `neighbors()`  # Experimental, method signature is subject to change
 
-Quotes a value for AQL.
+###### `createEdge()` # Experimental, method signature is subject to change
 
-###### `join()`
+###### `deleteEdge()` # Experimental, method signature is subject to change
 
-###### `query()`
+### Connection
 
-Raw AQL query.
+Check out **Connections** in the Sails docs, or see the `config/connections.js` file in a new Sails project for information on setting up adapters.
 
-###### `createEdge(@from,@to,@options,@callback)`
-Creates edge between specified two models using "@from" and "@to"
-(which can be objects or strings). NOTE: There's a current bug in
-arangojs library 3.3.0 which prevents creation of edges without a patch.
+in connection.js
+```javascript
 
-usage:
-  ```javascript
- //Assume a model named "Post"
-  Post.createEdge(post, comment, {'data': { 'additional : 'data' }},function(err, result){
+localArangoDB: {
+    adapter: 'sails-arangodb',
 
-  });
-  ```
+    host: 'localhost',
+    port: 8529,
 
-###### `deleteEdges(@from,@to,@options,@callback)`
-Deletes edges between specified two models using "@from" and "@to".
+    user: 'root',
+    password: 'CgdYW3zBLy5yCszR',
 
-usage:
-  ```javascript
- //Assume a model named "Post"
-  Post.deleteEdges(post, comment ,null,function(err, result){
+    database: '_system'
 
-  });
-  ```
+    graph: 'examplegraph'            // ArangoDB specific
+    collection: 'examplecollection'  // ArangoDB specific
+}
+```
+
+---
+
+# Older doc
 
 ### Example model definitions
 
@@ -133,9 +131,9 @@ module.exports = {
         },
         profilePic: {
             type: 'string'
-		}
-	}
-	}
+        }
+    }
+    }
 
 // api/models/User.js
 module.exports = {
@@ -148,38 +146,16 @@ module.exports = {
         },
         username: {
             type: 'string'
-		},
-		profile: {
-			collection: 'profile',
-			via: 'user',
-			edge: 'profileOf'
-		}
+        },
+        profile: {
+            collection: 'profile',
+            via: 'user',
+            edge: 'profileOf'
+        }
     }
 };
 ;
 ```
-
-Check out **Connections** in the Sails docs, or see the `config/connections.js` file in a new Sails project for information on setting up adapters.
-
-### Sample connection configuration in connection.js
-```javascript
-
-localArangoDB: {
-    adapter: 'sails-arangodb',
-
-    host: 'localhost',
-    port: 8529,
-
-    user: 'root',
-    password: 'CgdYW3zBLy5yCszR',
-
-    database: '_system'
-
-    graph: 'examplegraph'            // ArangoDB specific
-    collection: 'examplecollection'  // ArangoDB specific
-}
-```
-
 
 
 ### License
