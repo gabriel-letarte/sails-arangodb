@@ -23,12 +23,13 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
+    "aqb": ">=1.8.3",
     "arangojs": "5.x.x",
-    "q": "^1.0.1",
-    "underscore": "^1.6.0",
-    "lodash": ">=3.10.1",
     "async": "^0.9.0",
-    "aqb": ">=1.8.3"
+    "debug": "^2.3.3",
+    "lodash": ">=3.10.1",
+    "q": "^1.0.1",
+    "underscore": "^1.6.0"
   },
   "devDependencies": {
     "captains-log": "~0.11.0",
@@ -44,7 +45,6 @@
     ],
     "waterlineVersion": "~0.10.26"
   },
-
   "jshintConfig": {
     "bitwise": true,
     "curly": false,
