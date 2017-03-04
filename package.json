@@ -34,7 +34,7 @@
     "captains-log": "~0.11.0",
     "jshint": "^2.6.3",
     "mocha": "*",
-    "waterline-adapter-tests": "~0.10.14"
+    "waterline-adapter-tests": "~0.11.1"
   },
   "waterlineAdapter": {
     "type": "arangodb",
@@ -42,7 +42,7 @@
       "semantic",
       "queryable"
     ],
-    "waterlineVersion": "~0.10.26"
+    "waterlineVersion": "~0.11.0"
   },
   "jshintConfig": {
     "bitwise": true,

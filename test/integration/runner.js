@@ -18,6 +18,7 @@ var mocha = require('mocha');
 var log = new (require('captains-log'))();
 var TestRunner = require('waterline-adapter-tests');
 var Adapter = require('../../');
+var config = require("../test.json");
 
 
 
@@ -65,15 +66,16 @@ new TestRunner({
     adapter: Adapter,
 
     // Default adapter config to use.
-    config: {
-        //schema: false,
-	host: 'localhost',
-	port: 8529,
-	database: {
-	    name: 'test',
-	    graph: 'test'
-	}
-    },
+    config: config,
+//    config: {
+//        //schema: false,
+//	host: 'localhost',
+//	port: 8529,
+//	database: {
+//	    name: 'test',
+//	    graph: 'test'
+//	}
+//    },
 
     // The set of adapter interfaces to test against.
     // (grabbed these from this adapter's package.json file above)
