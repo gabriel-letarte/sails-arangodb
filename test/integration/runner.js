@@ -67,15 +67,6 @@ new TestRunner({
 
     // Default adapter config to use.
     config: config,
-//    config: {
-//        //schema: false,
-//	host: 'localhost',
-//	port: 8529,
-//	database: {
-//	    name: 'test',
-//	    graph: 'test'
-//	}
-//    },
 
     // The set of adapter interfaces to test against.
     // (grabbed these from this adapter's package.json file above)

@@ -69,6 +69,30 @@ localArangoDB: {
 }
 ```
 
+### Unit Testing
+
+To run unit-tests every time you save a change to a file, simply:
+```
+$ gulp
+```
+
+One off run of sails-arangodb specific tests (same as above):
+```
+$ gulp test  # or mocha
+```
+
+To run full test suite (including the waterline adapter compliance tests):
+```
+$ gulp full
+```
+(Important: you must create a test.json file for your local db instance first - see [test/README.md](test/README.md))
+
+Generate api jsdocs:
+```
+$ gulp docs
+```
+(these are also generated in the default 'watch' mode above)
+
 ---
 
 # Older doc

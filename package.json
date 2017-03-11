@@ -32,8 +32,17 @@
   },
   "devDependencies": {
     "captains-log": "~0.11.0",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-batch": "^1.0.5",
+    "gulp-jsdoc3": "^1.0.1",
+    "gulp-load-plugins": "^1.5.0",
+    "gulp-mocha": "^4.1.0",
+    "gulp-watch": "^4.3.11",
     "jshint": "^2.6.3",
     "mocha": "*",
+    "should": "^11.2.1",
+    "waterline": "^0.11.11",
     "waterline-adapter-tests": "~0.11.1"
   },
   "waterlineAdapter": {
