@@ -26,11 +26,11 @@ var config = require("../test.json");
 
 
 // Grab targeted interfaces from this adapter's `package.json` file:
-var package = {};
+var packagejson = {};
 var interfaces = [];
 try {
-    package = require('../../package.json');
-    interfaces = package['waterlineAdapter'].interfaces;
+    packagejson = require('../../package.json');
+    interfaces = packagejson.waterlineAdapter.interfaces;
 }
 catch (e) {
     throw new Error(
@@ -45,7 +45,7 @@ catch (e) {
 
 
 
-log.info('Testing `' + package.name + '`, a Sails/Waterline adapter.');
+log.info('Testing `' + packagejson.name + '`, a Sails/Waterline adapter.');
 log.info('Running `waterline-adapter-tests` against ' + interfaces.length + ' interfaces...');
 log.info('( ' + interfaces.join(', ') + ' )');
 console.log();
