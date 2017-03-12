@@ -11,7 +11,7 @@ const adapter = require('../');
 const config = require("./test.json");
 config.adapter = 'arangodb';
 
-const Users = require('./models/users');
+const Users_1 = require('./models/users_1');
 
 const waterline_config = {
   adapters: {
@@ -31,7 +31,7 @@ let models,
 describe('adapter', function () {
 
   before(function (done) {
-    orm.loadCollection(Users);
+    orm.loadCollection(Users_1);
     orm.initialize(waterline_config, (err, o) => {
       models = o.collections;
       connections = o.connections;
@@ -47,7 +47,7 @@ describe('adapter', function () {
 
   describe('methods', function () {
     it('should create a new document in users', (done) => {
-      models.users.create({name: 'Fred Blogs'})
+      models.users_1.create({name: 'Fred Blogs'})
       .then((user) => {
         should.exist(user);
         user.should.have.property('id');
@@ -67,7 +67,7 @@ describe('adapter', function () {
     });
 
     it('should find previously created user by id', (done) => {
-      models.users.find({id: saveId})
+      models.users_1.find({id: saveId})
       .then((users) => {
         should.exist(users);
         users.should.be.an.Array();
