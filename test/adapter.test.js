@@ -131,6 +131,63 @@ describe('adapter', function () {
         done(err);
       });
     });
+
+    it('should find user by name (case sensitive)', (done) => {
+      models.users_1.find({name: {contains: 'Fred Blogs', caseSensitive: true}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('Fred Blogs');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find user by name (case sensitive by default)', (done) => {
+      models.users_1.find({name: {contains: 'Fred Blogs'}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('Fred Blogs');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should fail to find user by name (case sensitive)', (done) => {
+      models.users_1.find({name: {contains: 'fred blogs'}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(0);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should fail to find user by name (case sensitive by default)', (done) => {
+      models.users_1.find({name: {contains: 'fred blogs', caseSensitive: true}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(0);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
   });
 
   describe('drop collection(s)', () => {
