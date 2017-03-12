@@ -24,7 +24,8 @@ const waterline_config = {
   defaults: {}
 };
 
-let models,
+let db,
+    models,
     connections,
     saveId;
 
@@ -33,9 +34,22 @@ describe('adapter', function () {
   before(function (done) {
     orm.loadCollection(Users_1);
     orm.initialize(waterline_config, (err, o) => {
+      if (err) {
+        return done(err);
+      }
+
       models = o.collections;
       connections = o.connections;
-      done(err);
+
+      connections.arangodb._adapter.getDB('arangodb', '', (n_db) => {
+        db = n_db;
+        db
+        .collection('users_1')
+        .truncate()
+        .then(() => {
+          done();
+        });
+      });
     });
   });
 
@@ -85,6 +99,14 @@ describe('adapter', function () {
         done();
       })
       .catch((err) => {
+        done(err);
+      });
+    });
+  });
+
+  describe('drop collection(s)', () => {
+    it('should drop the users_1 collection', (done) => {
+      models.users_1.drop((err) => {
         done(err);
       });
     });
