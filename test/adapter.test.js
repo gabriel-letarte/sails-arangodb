@@ -188,6 +188,81 @@ describe('adapter', function () {
       });
     });
 
+    it('should update the user name by id', (done) => {
+      models.users_1.update(saveId, {name: 'Joe Blogs'})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('Joe Blogs');
+        user.should.have.property('id');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should update the user name by name search', (done) => {
+      models.users_1.update({name: 'Joe Blogs'}, {name: 'Joseph Blogs'})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('Joseph Blogs');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should update the user name by name search (case insensitive)', (done) => {
+      models.users_1.update({name: {contains: 'joseph blogs', caseSensitive: false}}, {name: 'joseph blogs'})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('joseph blogs');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should support complex objects on update', (done) => {
+      var complex = {
+        age: 100,
+        profile: {
+          nested1: {
+            value: 50,
+            nested2: {
+              another_value1: 60,
+              another_value2: 70
+            }
+          }
+        }
+      };
+      models.users_1.update(saveId, {complex: complex})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.complex.should.eql(complex);
+        complex.age.should.equal(100);
+        complex.profile.nested1.nested2.another_value2.should.equal(70);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
   });
 
   describe('drop collection(s)', () => {
