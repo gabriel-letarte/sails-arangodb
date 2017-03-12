@@ -1,8 +1,7 @@
 {
   "host": "localhost",
   "port": 8529,
-  "database": {
-    "name": "test",
-    "graph": "test"
-  }
+  "user": "test",
+  "password": "test",
+  "database": "test"
 }
