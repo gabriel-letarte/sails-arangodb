@@ -95,7 +95,36 @@ describe('adapter', function () {
         user.should.have.property('createdAt');
         user.should.have.property('updatedAt');
         user.name.should.equal('Fred Blogs');
-        saveId = user.id;
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find user by name', (done) => {
+      models.users_1.find({name: 'Fred Blogs'})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('Fred Blogs');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find user by name (case insensitive)', (done) => {
+      models.users_1.find({name: {contains: 'fred blogs', caseSensitive: false}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('Fred Blogs');
         done();
       })
       .catch((err) => {
