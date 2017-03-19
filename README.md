@@ -87,6 +87,11 @@ $ gulp full
 ```
 (Important: you must create a test.json file for your local db instance first - see [test/README.md](test/README.md))
 
+To run just the waterline adapter compliance tests:
+```
+$ gulp waterline
+```
+
 Generate api jsdocs:
 ```
 $ gulp docs
