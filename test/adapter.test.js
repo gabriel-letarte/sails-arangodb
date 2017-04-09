@@ -110,7 +110,7 @@ describe('adapter', function () {
     });
 
     it('should create a new document in users', (done) => {
-      models.users_1.create({name: 'Fred Blogs', pet: savePetId})
+      models.users_1.create({name: 'Fred Blogs', pet: savePetId, second: 'match'})
       .then((user) => {
         should.exist(user);
         user.should.have.property('id');
@@ -380,6 +380,70 @@ describe('adapter', function () {
         users.length.should.equal(1);
         const user = users[0];
         user.complex.name.should.equal('Fred');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find using 2 fields (AND)', (done) => {
+      models.users_1.find({name: 'joseph blogs', second: 'match'})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.complex.name.should.equal('Fred');
+        user.second.should.equal('match');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find using 2 fields (AND) w/complex second field', (done) => {
+      models.users_1.find({name: 'joseph blogs', complex: {name: {contains: 'fr'}}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.complex.name.should.equal('Fred');
+        user.second.should.equal('match');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find using 2 contains fields (AND)', (done) => {
+      models.users_1.find({name: {contains: 'joseph'}, second: {contains: 'mat'}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.complex.name.should.equal('Fred');
+        user.second.should.equal('match');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find using 2 contains fields (AND) w/complex second field', (done) => {
+      models.users_1.find({name: {contains: 'joseph'}, complex: {name: {contains: 'fr'}}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.complex.name.should.equal('Fred');
+        user.second.should.equal('match');
         done();
       })
       .catch((err) => {

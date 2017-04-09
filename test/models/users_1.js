@@ -25,6 +25,10 @@ const Users = Waterline.Collection.extend({
 
     pet: {
       model: 'pets_1'
+    },
+
+    second: {
+      type: 'string'
     }
 
   }
