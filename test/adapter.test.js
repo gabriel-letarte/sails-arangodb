@@ -22,7 +22,8 @@ const waterline_config = {
   connections: {
     arangodb: config
   },
-  defaults: {}
+  defaults: {
+  }
 };
 
 let db,
@@ -193,8 +194,8 @@ describe('adapter', function () {
       });
     });
 
-    it('should find user by name (case sensitive by default)', (done) => {
-      models.users_1.find({name: {contains: 'Fred Blogs'}})
+    it('should find user by name (case insensitive by default)', (done) => {
+      models.users_1.find({name: {contains: 'fred blogs'}})
       .then((users) => {
         should.exist(users);
         users.should.be.an.Array();
@@ -209,19 +210,6 @@ describe('adapter', function () {
     });
 
     it('should fail to find user by name (case sensitive)', (done) => {
-      models.users_1.find({name: {contains: 'fred blogs'}})
-      .then((users) => {
-        should.exist(users);
-        users.should.be.an.Array();
-        users.length.should.equal(0);
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
-    });
-
-    it('should fail to find user by name (case sensitive by default)', (done) => {
       models.users_1.find({name: {contains: 'fred blogs', caseSensitive: true}})
       .then((users) => {
         should.exist(users);
@@ -313,7 +301,6 @@ describe('adapter', function () {
     it('should select a top-level field using select', (done) => {
       models.users_1.find({select: ['complex']})
       .then((users) => {
-        console.log('users: users:', users);
         should.exist(users);
         users.should.be.an.Array();
         users.length.should.equal(1);
@@ -373,7 +360,6 @@ describe('adapter', function () {
     it('should find by nested where clause with contains filter', (done) => {
       models.users_1.find({complex: {name: {contains: 'Fr'}}})
       .then((users) => {
-        console.log('users: users:', users);
         should.exist(users);
         users.should.be.an.Array();
         users.length.should.equal(1);
@@ -389,7 +375,6 @@ describe('adapter', function () {
     it('should find by nested where clause with contains filter (case insensitive)', (done) => {
       models.users_1.find({complex: {name: {caseSensitive: false, contains: 'fr'}}})
       .then((users) => {
-        console.log('users: users:', users);
         should.exist(users);
         users.should.be.an.Array();
         users.length.should.equal(1);
@@ -406,7 +391,6 @@ describe('adapter', function () {
       models.users_1.find({})
       .populate('pet')
       .then((users) => {
-        console.log('users with pet: users:', users);
         should.exist(users);
         users.should.be.an.Array();
         users.length.should.equal(1);
@@ -423,7 +407,6 @@ describe('adapter', function () {
       models.users_1.find({pet: {name: 'Woof'}})
       .populate('pet')
       .then((users) => {
-        console.log('users with pet: users:', users);
         should.exist(users);
         users.should.be.an.Array();
         users.length.should.equal(1);
@@ -436,21 +419,47 @@ describe('adapter', function () {
       });
     });
 
+    it('should not return documents with undefined field with <=', (done) => {
+      models.users_1.find({notexists: {'lessThanOrEqual': 10}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(0);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should not return documents with undefined field with <', (done) => {
+      models.users_1.find({notexists: {'lessThan': 10}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(0);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
   });
 
-//  describe('drop collection(s)', () => {
-//    it('should drop the users_1 collection', (done) => {
-//      models.users_1.drop((err) => {
-//        done(err);
-//      });
-//    });
-//
-//    it('should drop the pets_1 collection', (done) => {
-//      models.pets_1.drop((err) => {
-//        done(err);
-//      });
-//    });
-//  });
+  describe('drop collection(s)', () => {
+    it('should drop the users_1 collection', (done) => {
+      models.users_1.drop((err) => {
+        done(err);
+      });
+    });
+
+    it('should drop the pets_1 collection', (done) => {
+      models.pets_1.drop((err) => {
+        done(err);
+      });
+    });
+  });
 
 
 }); // adapter
