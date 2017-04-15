@@ -1,7 +1,7 @@
 /*jshint node: true, esversion:6 */
 'use strict';
 
-/*global describe, before, it, after */
+/*global describe, before, it, after, beforeEach */
 const assert = require('assert');
 const should = require('should');
 
@@ -509,7 +509,85 @@ describe('adapter', function () {
       });
     });
 
-  });
+    describe('delete', () => {
+      beforeEach((done) => {
+        db.collection('users_1').truncate()
+        .then(() => {
+          return models.users_1.create({name: 'Don\'t Delete Me', pet: savePetId, second: 'match'});
+        })
+        .then(() => {
+          models.users_1.create({name: 'Delete Me', pet: savePetId, second: 'match'})
+          .then((user) => {
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+        });
+      });
+
+      it('should delete entry by name', (done) => {
+        models.users_1
+        .destroy({name: 'Delete Me'})
+        .then((deleted) => {
+          should.exist(deleted);
+          deleted.should.be.an.Array();
+          deleted.length.should.equal(1);
+          deleted[0].name.should.equal('Delete Me');
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+
+      it('should delete entry in array', (done) => {
+        models.users_1
+        .destroy({name: ['Me', 'Delete Me']})
+        .then((deleted) => {
+          should.exist(deleted);
+          deleted.should.be.an.Array();
+          deleted.length.should.equal(1);
+          deleted[0].name.should.equal('Delete Me');
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+
+      it('should delete entry not in (with v0.11 !) array', (done) => {
+        models.users_1
+        .destroy({name: {'!': ['Me', 'Don\'t Delete Me']}})
+        .then((deleted) => {
+          should.exist(deleted);
+          deleted.should.be.an.Array();
+          deleted.length.should.equal(1);
+          deleted[0].name.should.equal('Delete Me');
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+
+      it('should delete entry not in (with v0.12 nin) array', (done) => {
+        models.users_1
+        .destroy({name: {nin: ['Me', 'Don\'t Delete Me']}})
+        .then((deleted) => {
+          should.exist(deleted);
+          deleted.should.be.an.Array();
+          deleted.length.should.equal(1);
+          deleted[0].name.should.equal('Delete Me');
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+    }); // delete
+
+  }); //methods
 
   describe('drop collection(s)', () => {
     it('should drop the users_1 collection', (done) => {
