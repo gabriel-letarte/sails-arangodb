@@ -607,6 +607,7 @@ describe('adapter', function () {
             date.setDate(date.getDate() + i);
 
             users.push({
+              name: 'required, but ignored in this test',
               first_name: 'greaterThanOrEqual_dates_user' + i,
               type: testName,
               dob: date
