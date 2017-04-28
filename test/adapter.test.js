@@ -662,19 +662,19 @@ describe('adapter', function () {
 
   }); //methods
 
-//  describe('drop collection(s)', () => {
-//    it('should drop the users_1 collection', (done) => {
-//      models.users_1.drop((err) => {
-//        done(err);
-//      });
-//    });
-//
-//    it('should drop the pets_1 collection', (done) => {
-//      models.pets_1.drop((err) => {
-//        done(err);
-//      });
-//    });
-//  });
+  describe('drop collection(s)', () => {
+    it('should drop the users_1 collection', (done) => {
+      models.users_1.drop((err) => {
+        done(err);
+      });
+    });
+
+    it('should drop the pets_1 collection', (done) => {
+      models.pets_1.drop((err) => {
+        done(err);
+      });
+    });
+  });
 
 
 }); // adapter
