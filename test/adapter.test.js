@@ -587,21 +587,93 @@ describe('adapter', function () {
       });
     }); // delete
 
+    // adapted from waterline tests
+    describe('greaterThanOrEqual (>=)', function() {
+      describe('dates', function() {
+
+        /////////////////////////////////////////////////////
+        // TEST SETUP
+        ////////////////////////////////////////////////////
+
+        var testName = 'greaterThanOrEqual dates test';
+
+        before(function(done) {
+          // Insert 10 Users
+          var users = [],
+              date;
+
+          for(var i=0; i<10; i++) {
+            date = new Date(2013,10,1);
+            date.setDate(date.getDate() + i);
+
+            users.push({
+              first_name: 'greaterThanOrEqual_dates_user' + i,
+              type: testName,
+              dob: date
+            });
+          }
+
+          models.users_1.createEach(users, function(err, users) {
+            if(err) return done(err);
+            done();
+          });
+        });
+
+        /////////////////////////////////////////////////////
+        // TEST METHODS
+        ////////////////////////////////////////////////////
+
+        it('should return records with greaterThanOrEqual key when searching dates', function(done) {
+          models.users_1.find({ type: testName, dob: { greaterThanOrEqual: new Date(2013, 10, 9) }}).sort('first_name').exec(function(err, users) {
+            assert.ifError(err);
+            assert(Array.isArray(users));
+            assert.strictEqual(users.length, 2);
+            assert.equal(users[0].first_name, 'greaterThanOrEqual_dates_user8');
+            done();
+          });
+        });
+
+        it('should return records with symbolic usage >= usage when searching dates', function(done) {
+          models.users_1.find({ type: testName, dob: { '>=': new Date(2013, 10, 9) }}).sort('first_name').exec(function(err, users) {
+            assert.ifError(err);
+            assert(Array.isArray(users));
+            assert.strictEqual(users.length, 2);
+            assert.equal(users[0].first_name, 'greaterThanOrEqual_dates_user8');
+            done();
+          });
+        });
+
+        it('should return records with symbolic usage >= usage when searching dates as ISO strings', function(done) {
+          var dateString = new Date(2013,10,9);
+//          dateString = dateString.toString();
+          dateString = dateString.toISOString();
+          models.users_1.find({ type: testName, dob: { '>=': dateString }}).sort('first_name').exec(function(err, users) {
+            assert.ifError(err);
+            assert(Array.isArray(users));
+            assert.strictEqual(users.length, 2);
+            assert.equal(users[0].first_name, 'greaterThanOrEqual_dates_user8');
+            done();
+          });
+        });
+
+      });
+    });
+
   }); //methods
 
-  describe('drop collection(s)', () => {
-    it('should drop the users_1 collection', (done) => {
-      models.users_1.drop((err) => {
-        done(err);
-      });
-    });
-
-    it('should drop the pets_1 collection', (done) => {
-      models.pets_1.drop((err) => {
-        done(err);
-      });
-    });
-  });
+//  describe('drop collection(s)', () => {
+//    it('should drop the users_1 collection', (done) => {
+//      models.users_1.drop((err) => {
+//        done(err);
+//      });
+//    });
+//
+//    it('should drop the pets_1 collection', (done) => {
+//      models.pets_1.drop((err) => {
+//        done(err);
+//      });
+//    });
+//  });
 
 
 }); // adapter

@@ -18,7 +18,7 @@ const Users = Waterline.Collection.extend({
 
     name: {
       type: 'string',
-      required: true
+//      required: true
     },
 
     complex: { type: 'object' },
@@ -29,7 +29,11 @@ const Users = Waterline.Collection.extend({
 
     second: {
       type: 'string'
-    }
+    },
+
+    first_name: 'string',
+    dob: 'date',
+    type: 'string'
 
   }
 });
