@@ -1,7 +1,7 @@
 /*jshint node: true, esversion:6 */
 'use strict';
 
-/*global describe, before, it, after, beforeEach */
+/*global describe, before, it, after, beforeEach, afterEach */
 const assert = require('assert');
 const should = require('should');
 
@@ -13,6 +13,7 @@ config.adapter = 'arangodb';
 
 const Users_1 = require('./models/users_1');
 const Pets_1 = require('./models/pets_1');
+const Profiles_1 = require('./models/profiles_1');
 
 const waterline_config = {
   adapters: {
@@ -37,10 +38,12 @@ describe('adapter', function () {
   before(function (done) {
     orm.loadCollection(Users_1);
     orm.loadCollection(Pets_1);
+    orm.loadCollection(Profiles_1);
     orm.initialize(waterline_config, (err, o) => {
       if (err) {
         return done(err);
       }
+//      console.log('o:', o);
 
       models = o.collections;
       connections = o.connections;
@@ -49,10 +52,16 @@ describe('adapter', function () {
         db = n_db;
         db.collection('users_1').truncate()
         .then(() => {
-          db.collection('pets_1').truncate()
-          .then(() => {
-            done();
-          });
+          return db.collection('pets_1').truncate();
+        })
+        .then(() => {
+          return db.collection('profiles_1').truncate();
+        })
+        .then(() => {
+          return db.collection('profileOf').truncate();
+        })
+        .then(() => {
+          done();
         });
       });
     });
@@ -74,7 +83,7 @@ describe('adapter', function () {
       .then((pet) => {
         should.exist(pet);
         pet.should.have.property('id');
-        pet.should.have.property('_id');
+        pet.should.have.property('_key');
         pet.should.have.property('_rev');
         pet.should.have.property('name');
         pet.should.have.property('createdAt');
@@ -96,7 +105,7 @@ describe('adapter', function () {
         pets.length.should.equal(1);
         const pet = pets[0];
         pet.should.have.property('id');
-        pet.should.have.property('_id');
+        pet.should.have.property('_key');
         pet.should.have.property('_rev');
         pet.should.have.property('name');
         pet.should.have.property('createdAt');
@@ -114,7 +123,7 @@ describe('adapter', function () {
       .then((user) => {
         should.exist(user);
         user.should.have.property('id');
-        user.should.have.property('_id');
+        user.should.have.property('_key');
         user.should.have.property('_rev');
         user.should.have.property('name');
         user.should.have.property('createdAt');
@@ -136,7 +145,7 @@ describe('adapter', function () {
         users.length.should.equal(1);
         const user = users[0];
         user.should.have.property('id');
-        user.should.have.property('_id');
+        user.should.have.property('_key');
         user.should.have.property('_rev');
         user.should.have.property('name');
         user.should.have.property('createdAt');
@@ -660,7 +669,146 @@ describe('adapter', function () {
       });
     });
 
-  }); //methods
+    describe('update', function () {
+      let id;
+      beforeEach(function (done) {
+        var user = {
+          name: 'update test',
+          first_name: 'update',
+          type: 'update test'
+        };
+        models.users_1.create(user)
+        .then((user) => {
+          id = user.id;
+          done();
+        });
+      });
+
+      afterEach(function (done) {
+        models.users_1.destroy(id)
+        .then(() => {
+          done();
+        });
+      });
+
+      it('should merge on update by default', function (done) {
+        models.users_1.update({
+          id: id
+        }, {newfield: 'merged'})
+        .then((updated) => {
+          return models.users_1.find(id)
+          .then((docs) => {
+            const doc = docs[0];
+            should.exist(doc);
+            should.exist(doc.createdAt);
+            should.exist(doc.name);
+            done();
+          });
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+
+      it('should replace on update', function (done) {
+        models.users_1.update({
+          id: id,
+          $replace: true
+        }, {newfield: 'replaced'})
+        .then((updated) => {
+          return models.users_1.find(id)
+          .then((docs) => {
+            const doc = docs[0];
+            should.exist(doc);
+            should.exist(doc.createdAt);
+            should.not.exist(doc.name);
+            done();
+          });
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+    });
+
+  }); // methods
+
+  describe('Graphs', () => {
+    let profile_id,
+        user_id,
+        edge_id;
+
+    before((done) => {
+      models.profiles_1.create({url: 'http://gravitar...'})
+      .then((profile) => {
+        profile_id = profile.id;
+        return models.users_1.create({name: 'Graph User'})
+        .then((user) => {
+          user_id = user.id;
+          done();
+        });
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    describe('createEdge', () => {
+      it('should create an edge', (done) => {
+        models.users_1.createEdge('profileOf', user_id, profile_id, {
+          test_attr1: 'attr value 1'
+        })
+        .then((res) => {
+          res.should.have.property('_id');
+          res.should.have.property('_key');
+          res.should.have.property('_rev');
+          edge_id = res._id;
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+    });
+
+    describe('neighbors', () => {
+      it('should return the neighbor (profile) of the user (anonymous graph)', (done) => {
+        models.users_1.neighbors(user_id, ['profileOf'])
+        .then((res) => {
+          should.exist(res);
+          res.should.be.an.Array();
+          res.length.should.equal(1);
+
+          const n = res[0];
+          should.exist(n);
+          n.should.have.property('_id');
+          n.should.have.property('_key');
+          n.should.have.property('_rev');
+          n.should.have.property('url');
+          n._id.should.equal(profile_id);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+    });
+
+    describe('deleteEdge', () => {
+      it('should delete an edge', (done) => {
+        models.users_1.deleteEdge('profileOf', edge_id)
+        .then((res) => {
+          res.should.have.property('_id');
+          res.should.have.property('_key');
+          res.should.have.property('_rev');
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+    });
+  }); // graphs
 
   describe('drop collection(s)', () => {
     it('should drop the users_1 collection', (done) => {
@@ -671,6 +819,12 @@ describe('adapter', function () {
 
     it('should drop the pets_1 collection', (done) => {
       models.pets_1.drop((err) => {
+        done(err);
+      });
+    });
+
+    it('should drop the profiles_1 collection', (done) => {
+      models.profiles_1.drop((err) => {
         done(err);
       });
     });

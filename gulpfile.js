@@ -13,14 +13,32 @@ var gulp = require('gulp'),
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
+var watching = false;
+
 gulp.task('mocha', function () {
-  return gulp.src(['test/**/*.js', '!test/integration/runner.js'], { read: false })
+  return gulp.src(['test/**/*.js', '!test/models/*.js', '!test/integration/runner.js'], { read: false })
   .pipe(mocha({
     reporter: 'spec',
     globals: {
       should: require('should').noConflict()
     }
-  }));
+  }))
+  .once('error', function (err) {
+    console.log('mocha errored... ');
+    if (watching) {
+      this.emit('end');
+    } else {
+      process.exit(1);
+    }
+  })
+  .once('end', function () {
+    console.log('mocha ended...');
+    if (watching) {
+      this.emit('end');
+    } else {
+      process.exit(0);
+    }
+  });
 });
 
 gulp.task('waterline', function (done) {
@@ -36,6 +54,7 @@ gulp.task('testwdocs', ['mocha', 'docs']);
 gulp.task('full', ['mocha', 'waterline']);
 
 gulp.task('watch', function () {
+  watching = true;
   watch([
     'lib/**',
     'test/**'

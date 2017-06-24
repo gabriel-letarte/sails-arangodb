@@ -3,8 +3,8 @@
 
 const Waterline = require('waterline');
 
-const Pets = Waterline.Collection.extend({
-  identity: 'pets_1',
+const Profiles = Waterline.Collection.extend({
+  identity: 'profiles_1',
   schema: true,
   connection: 'arangodb',
 
@@ -16,14 +16,11 @@ const Pets = Waterline.Collection.extend({
       columnName: '_id'
     },
 
-    name: {
-      type: 'string',
-      required: true
+    url: {
+      type: 'string'
     },
-
-    complex: { type: 'object' }
 
   }
 });
 
-module.exports = Pets;
+module.exports = Profiles;

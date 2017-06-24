@@ -13,7 +13,7 @@ const Users = Waterline.Collection.extend({
     id: {
       type: 'string',
       primaryKey: true,
-      columnName: '_key'
+      columnName: '_id'
     },
 
     name: {
@@ -33,7 +33,15 @@ const Users = Waterline.Collection.extend({
 
     first_name: 'string',
     dob: 'date',
-    type: 'string'
+    type: 'string',
+
+    newfield: 'string',
+
+    profile: {
+      collection: 'profiles_1',
+      via: 'id',
+      edge: 'profileOf'
+    }
 
   }
 });
