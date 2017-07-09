@@ -5,6 +5,8 @@
 const assert = require('assert');
 const should = require('should');
 
+const Database = require('arangojs');
+
 const Waterline = require('waterline');
 const orm = new Waterline();
 const adapter = require('../');
@@ -14,6 +16,8 @@ config.adapter = 'arangodb';
 const Users_1 = require('./models/users_1');
 const Pets_1 = require('./models/pets_1');
 const Profiles_1 = require('./models/profiles_1');
+const Users_Profiles_Graph = require('./models/users_profiles_graph');
+const Users_Users_Graph = require('./models/users_users_graph');
 
 const waterline_config = {
   adapters: {
@@ -36,34 +40,35 @@ let db,
 describe('adapter', function () {
 
   before(function (done) {
-    orm.loadCollection(Users_1);
-    orm.loadCollection(Pets_1);
-    orm.loadCollection(Profiles_1);
-    orm.initialize(waterline_config, (err, o) => {
-      if (err) {
-        return done(err);
-      }
-//      console.log('o:', o);
 
-      models = o.collections;
-      connections = o.connections;
+    const dbUrl = `http://${config.user}:${config.password}@${config.host}:${config.port}`;
+    const sys_db = new Database({
+      url: dbUrl,
+      databaseName: '_system'
+    });
 
-      connections.arangodb._adapter.getDB('arangodb', '', (n_db) => {
-        db = n_db;
-        db.collection('users_1').truncate()
-        .then(() => {
-          return db.collection('pets_1').truncate();
-        })
-        .then(() => {
-          return db.collection('profiles_1').truncate();
-        })
-        .then(() => {
-          return db.collection('profileOf').truncate();
-        })
-        .then(() => {
+    sys_db.dropDatabase(config.database)
+    .then(() => {
+      orm.loadCollection(Users_1);
+      orm.loadCollection(Pets_1);
+      orm.loadCollection(Profiles_1);
+      orm.loadCollection(Users_Profiles_Graph);
+      orm.loadCollection(Users_Users_Graph);
+      orm.initialize(waterline_config, (err, o) => {
+        if (err) {
+          return done(err);
+        }
+        models = o.collections;
+        connections = o.connections;
+
+        connections.arangodb._adapter.getDB('arangodb', '', (n_db) => {
+          db = n_db;
           done();
         });
       });
+    })
+    .catch((err) => {
+      done(err);
     });
   });
 
@@ -460,7 +465,7 @@ describe('adapter', function () {
       });
     });
 
-    it('should populate pet', (done) => {
+    it('join should populate pet', (done) => {
       models.users_1.find({})
       .populate('pet')
       .then((users) => {
@@ -476,7 +481,7 @@ describe('adapter', function () {
       });
     });
 
-    it('should populate pet and find by pet name', (done) => {
+    it('join should populate pet and find by pet name', (done) => {
       models.users_1.find({pet: {name: 'Woof'}})
       .populate('pet')
       .then((users) => {
@@ -733,6 +738,10 @@ describe('adapter', function () {
 
   }); // methods
 
+
+  ////////////////////
+  // Graphs
+
   describe('Graphs', () => {
     let profile_id,
         user_id,
@@ -753,7 +762,7 @@ describe('adapter', function () {
       });
     });
 
-    describe('createEdge', () => {
+    describe('createEdge on anonymous graph', () => {
       it('should create an edge', (done) => {
         models.users_1.createEdge('profileOf', user_id, profile_id, {
           test_attr1: 'attr value 1'
@@ -794,6 +803,27 @@ describe('adapter', function () {
       });
     });
 
+    describe('join (populate) with edge collection profileOf', () => {
+      it('should populate (join) profile and for the user (via graph)', (done) => {
+        models.users_1.find({id: user_id})
+        .populate('profile')
+        .then((users) => {
+          should.exist(users);
+          users.should.be.an.Array();
+          users.length.should.equal(1);
+          const user = users[0];
+          should.exist(user.profile);
+//          console.log('user:', user);
+          user.profile.should.be.an.Array();
+          user.profile.length.should.equal(1);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+    });
+
     describe('deleteEdge', () => {
       it('should delete an edge', (done) => {
         models.users_1.deleteEdge('profileOf', edge_id)
@@ -808,27 +838,77 @@ describe('adapter', function () {
         });
       });
     });
+
+    describe('createEdge on named graph', () => {
+      it('should create an edge on the named graph', (done) => {
+        models.users_1.createEdge('users_profiles', user_id, profile_id, {
+          test_attr1: 'attr value 2 named graph'
+        })
+        .then((res) => {
+          res.should.have.property('_id');
+          res.should.have.property('_key');
+          res.should.have.property('_rev');
+          edge_id = res._id;
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+    });
+
+    describe('neighbors', () => {
+      it('should return the neighbor (profile) of the user (anonymous graph)', (done) => {
+        models.users_1.neighbors(user_id, ['users_profiles'])
+        .then((res) => {
+          should.exist(res);
+          res.should.be.an.Array();
+          res.length.should.equal(1);
+
+          const n = res[0];
+          should.exist(n);
+          n.should.have.property('_id');
+          n.should.have.property('_key');
+          n.should.have.property('_rev');
+          n.should.have.property('url');
+          n._id.should.equal(profile_id);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+    });
+
+
   }); // graphs
 
-  describe('drop collection(s)', () => {
-    it('should drop the users_1 collection', (done) => {
-      models.users_1.drop((err) => {
-        done(err);
-      });
-    });
-
-    it('should drop the pets_1 collection', (done) => {
-      models.pets_1.drop((err) => {
-        done(err);
-      });
-    });
-
-    it('should drop the profiles_1 collection', (done) => {
-      models.profiles_1.drop((err) => {
-        done(err);
-      });
-    });
-  });
+//  describe('drop collection(s)', () => {
+//    it('should drop the users_1 collection', (done) => {
+//      models.users_1.drop((err) => {
+//        done(err);
+//      });
+//    });
+//
+//    it('should drop the pets_1 collection', (done) => {
+//      models.pets_1.drop((err) => {
+//        done(err);
+//      });
+//    });
+//
+//    it('should drop the profiles_1 collection', (done) => {
+//      models.profiles_1.drop((err) => {
+//        done(err);
+//      });
+//    });
+//
+//    it('should drop the profiles_1_id__users_1_profile (?) junctionTable collection', (done) => {
+//      models.profiles_1_id__users_1_profile.drop((err) => {
+//        done(err);
+//      });
+//    });
+//
+//  });
 
 
 }); // adapter
