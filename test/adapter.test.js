@@ -762,10 +762,10 @@ describe('adapter', function () {
       });
     });
 
-    describe('createEdge on anonymous graph', () => {
+    describe('createEdge as anonymous graph', () => {
       it('should create an edge', (done) => {
         models.users_1.createEdge('profileOf', user_id, profile_id, {
-          test_attr1: 'attr value 1'
+          test_attr1: 'edge attr value 1'
         })
         .then((res) => {
           res.should.have.property('_id');
@@ -858,8 +858,31 @@ describe('adapter', function () {
     });
 
     describe('neighbors', () => {
-      it('should return the neighbor (profile) of the user (anonymous graph)', (done) => {
+      it('should return the neighbor (profile) of the user (edge coll from named graph)', (done) => {
         models.users_1.neighbors(user_id, ['users_profiles'])
+        .then((res) => {
+          should.exist(res);
+          res.should.be.an.Array();
+          res.length.should.equal(1);
+
+          const n = res[0];
+          should.exist(n);
+          n.should.have.property('_id');
+          n.should.have.property('_key');
+          n.should.have.property('_rev');
+          n.should.have.property('url');
+          n._id.should.equal(profile_id);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+    });
+
+    describe('neighbors', () => {
+      it('should return the neighbor (profile) of the user (named graph)', (done) => {
+        models.users_1.neighbors(user_id, 'users_profiles_graph')
         .then((res) => {
           should.exist(res);
           res.should.be.an.Array();
@@ -883,32 +906,32 @@ describe('adapter', function () {
 
   }); // graphs
 
-//  describe('drop collection(s)', () => {
-//    it('should drop the users_1 collection', (done) => {
-//      models.users_1.drop((err) => {
-//        done(err);
-//      });
-//    });
-//
-//    it('should drop the pets_1 collection', (done) => {
-//      models.pets_1.drop((err) => {
-//        done(err);
-//      });
-//    });
-//
-//    it('should drop the profiles_1 collection', (done) => {
-//      models.profiles_1.drop((err) => {
-//        done(err);
-//      });
-//    });
-//
-//    it('should drop the profiles_1_id__users_1_profile (?) junctionTable collection', (done) => {
-//      models.profiles_1_id__users_1_profile.drop((err) => {
-//        done(err);
-//      });
-//    });
-//
-//  });
+  describe('drop collection(s)', () => {
+    it('should drop the users_1 collection', (done) => {
+      models.users_1.drop((err) => {
+        done(err);
+      });
+    });
+
+    it('should drop the pets_1 collection', (done) => {
+      models.pets_1.drop((err) => {
+        done(err);
+      });
+    });
+
+    it('should drop the profiles_1 collection', (done) => {
+      models.profiles_1.drop((err) => {
+        done(err);
+      });
+    });
+
+    it('should drop the profiles_1_id__users_1_profile (?) junctionTable collection', (done) => {
+      models.profiles_1_id__users_1_profile.drop((err) => {
+        done(err);
+      });
+    });
+
+  });
 
 
 }); // adapter
