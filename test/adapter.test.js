@@ -878,9 +878,7 @@ describe('adapter', function () {
           done(err);
         });
       });
-    });
 
-    describe('neighbors', () => {
       it('should return the neighbor (profile) of the user (named graph)', (done) => {
         models.users_1.neighbors(user_id, 'users_profiles_graph')
         .then((res) => {
