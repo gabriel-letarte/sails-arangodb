@@ -40,6 +40,8 @@ This adapter exposes the following methods:
 
 ###### `destroy()`
 
+###### `createGraph()` # Create a Named Graph
+
 ###### `neighbors()`  # Experimental, method signature is subject to change
 
 ###### `createEdge()` # Experimental, method signature is subject to change
@@ -64,10 +66,42 @@ localArangoDB: {
 
     database: '_system'
 
-    graph: 'examplegraph'            // ArangoDB specific
     collection: 'examplecollection'  // ArangoDB specific
 }
 ```
+
+### Schema for Graphs
+
+#### Defining a Named Graph in the Schema
+```
+/*jshint node: true, esversion: 6*/
+'use strict';
+
+const Waterline = require('waterline');
+
+const UsersProfilesGraph = Waterline.Collection.extend({
+  identity: 'users_profiles_graph',
+  schema: true,
+  connection: 'arangodb',
+
+  attributes: {
+    // this is a named graph
+    $edgeDefinitions: [
+      {
+        collection: 'users_profiles',
+        from: ['users_1'],
+        to: ['profiles_1']
+      }
+    ]
+  }
+});
+module.exports = UsersProfilesGraph;
+
+```
+If a model has an attribute called `$edgeDefinitions` then the model becomes a named
+graph.  Any further attributes are ignored.
+
+[See tests](tests/) for further examples.
 
 ### Unit Testing
 

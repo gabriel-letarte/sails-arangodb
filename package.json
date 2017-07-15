@@ -1,10 +1,10 @@
 {
   "name": "sails-arangodb",
-  "version": "0.2.3",
-  "description": "arangodb adapter for Sails / Waterline",
+  "version": "0.3.0",
+  "description": "Arangodb adapter for Sails / Waterline",
   "main": "./lib/adapter.js",
   "scripts": {
-    "test": "node test/integration/runner -R spec -b",
+    "test": "gulp waterline; gulp test",
     "lint": "jshint lib/*.js"
   },
   "repository": {

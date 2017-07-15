@@ -42,7 +42,7 @@ gulp.task('mocha', function () {
 });
 
 gulp.task('waterline', function (done) {
-  var cp = spawn('/usr/bin/npm', ['test'], {stdio: 'inherit'});
+  var cp = spawn('node', ['test/integration/runner', '-R', 'spec', '-b'], {stdio: 'inherit'});
   cp.on('close', (code) => {
     console.log('waterline adapter tests completed rc:', code);
     done();
