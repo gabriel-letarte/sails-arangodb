@@ -115,13 +115,9 @@ One off run of sails-arangodb specific tests (same as above):
 $ gulp test  # or mocha
 ```
 
-To run full test suite (including the waterline adapter compliance tests):
-```
-$ gulp full
-```
 (Important: you must create a test.json file for your local db instance first - see [test/README.md](test/README.md))
 
-To run just the waterline adapter compliance tests:
+To run the waterline adapter compliance tests:
 ```
 $ gulp waterline
 ```

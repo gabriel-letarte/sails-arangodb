@@ -51,7 +51,6 @@ gulp.task('waterline', function (done) {
 
 gulp.task('test', ['mocha']);
 gulp.task('testwdocs', ['mocha', 'docs']);
-gulp.task('full', ['mocha', 'waterline']);
 
 gulp.task('watch', function () {
   watching = true;
