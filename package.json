@@ -1,10 +1,10 @@
 {
   "name": "sails-arangodb",
-  "version": "0.2.3",
-  "description": "arangodb adapter for Sails / Waterline",
+  "version": "0.3.0",
+  "description": "Arangodb adapter for Sails / Waterline",
   "main": "./lib/adapter.js",
   "scripts": {
-    "test": "node test/integration/runner -R spec -b",
+    "test": "gulp waterline; gulp test",
     "lint": "jshint lib/*.js"
   },
   "repository": {
@@ -28,14 +28,22 @@
     "async": "^0.9.0",
     "debug": "^2.3.3",
     "lodash": ">=3.10.1",
-    "q": "^1.0.1",
-    "underscore": "^1.6.0"
+    "q": "^1.0.1"
   },
   "devDependencies": {
     "captains-log": "~0.11.0",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-batch": "^1.0.5",
+    "gulp-jsdoc3": "^1.0.1",
+    "gulp-load-plugins": "^1.5.0",
+    "gulp-mocha": "^4.1.0",
+    "gulp-watch": "^4.3.11",
     "jshint": "^2.6.3",
     "mocha": "*",
-    "waterline-adapter-tests": "~0.10.14"
+    "should": "^11.2.1",
+    "waterline": "^0.11.11",
+    "waterline-adapter-tests": "~0.11.1"
   },
   "waterlineAdapter": {
     "type": "arangodb",
@@ -43,7 +51,7 @@
       "semantic",
       "queryable"
     ],
-    "waterlineVersion": "~0.10.26"
+    "waterlineVersion": "~0.11.0"
   },
   "jshintConfig": {
     "bitwise": true,

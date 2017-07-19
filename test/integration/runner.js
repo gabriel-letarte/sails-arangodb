@@ -1,3 +1,6 @@
+/*jshint node: true */
+'use strict';
+
 /**
  * Run integration tests
  *
@@ -18,15 +21,16 @@ var mocha = require('mocha');
 var log = new (require('captains-log'))();
 var TestRunner = require('waterline-adapter-tests');
 var Adapter = require('../../');
+var config = require("../test.json");
 
 
 
 // Grab targeted interfaces from this adapter's `package.json` file:
-var package = {};
+var packagejson = {};
 var interfaces = [];
 try {
-    package = require('../../package.json');
-    interfaces = package['waterlineAdapter'].interfaces;
+    packagejson = require('../../package.json');
+    interfaces = packagejson.waterlineAdapter.interfaces;
 }
 catch (e) {
     throw new Error(
@@ -41,7 +45,7 @@ catch (e) {
 
 
 
-log.info('Testing `' + package.name + '`, a Sails/Waterline adapter.');
+log.info('Testing `' + packagejson.name + '`, a Sails/Waterline adapter.');
 log.info('Running `waterline-adapter-tests` against ' + interfaces.length + ' interfaces...');
 log.info('( ' + interfaces.join(', ') + ' )');
 console.log();
@@ -65,15 +69,7 @@ new TestRunner({
     adapter: Adapter,
 
     // Default adapter config to use.
-    config: {
-        //schema: false,
-	host: 'localhost',
-	port: 8529,
-	database: {
-	    name: 'test',
-	    graph: 'test'
-	}
-    },
+    config: config,
 
     // The set of adapter interfaces to test against.
     // (grabbed these from this adapter's package.json file above)

@@ -40,6 +40,8 @@ This adapter exposes the following methods:
 
 ###### `destroy()`
 
+###### `createGraph()` # Create a Named Graph
+
 ###### `neighbors()`  # Experimental, method signature is subject to change
 
 ###### `createEdge()` # Experimental, method signature is subject to change
@@ -64,10 +66,67 @@ localArangoDB: {
 
     database: '_system'
 
-    graph: 'examplegraph'            // ArangoDB specific
     collection: 'examplecollection'  // ArangoDB specific
 }
 ```
+
+### Schema for Graphs
+
+#### Defining a Named Graph in the Schema
+```
+/*jshint node: true, esversion: 6*/
+'use strict';
+
+const Waterline = require('waterline');
+
+const UsersProfilesGraph = Waterline.Collection.extend({
+  identity: 'users_profiles_graph',
+  schema: true,
+  connection: 'arangodb',
+
+  attributes: {
+    // this is a named graph
+    $edgeDefinitions: [
+      {
+        collection: 'users_profiles',
+        from: ['users_1'],
+        to: ['profiles_1']
+      }
+    ]
+  }
+});
+module.exports = UsersProfilesGraph;
+
+```
+If a model has an attribute called `$edgeDefinitions` then the model becomes a named
+graph.  Any further attributes are ignored.
+
+[See tests](tests/) for further examples.
+
+### Unit Testing
+
+To run unit-tests every time you save a change to a file, simply:
+```
+$ gulp
+```
+
+One off run of sails-arangodb specific tests (same as above):
+```
+$ gulp test  # or mocha
+```
+
+(Important: you must create a test.json file for your local db instance first - see [test/README.md](test/README.md))
+
+To run the waterline adapter compliance tests:
+```
+$ gulp waterline
+```
+
+Generate api jsdocs:
+```
+$ gulp docs
+```
+(these are also generated in the default 'watch' mode above)
 
 ---
 
